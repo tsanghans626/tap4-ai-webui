@@ -57,9 +57,10 @@ export default function Navigation() {
                 </Link>
               ))}
             </ul>
-            <div className='flex items-center gap-x-3'>
+            {/* 注释语言选择 */}
+            {/* <div className='flex items-center gap-x-3'>
               <LocaleSwitcher />
-            </div>
+            </div> */}
           </div>
           {/* mobile */}
           <div className='mx-3 flex items-center gap-x-4 lg:hidden'>

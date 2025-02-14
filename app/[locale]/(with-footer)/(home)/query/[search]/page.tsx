@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
-import { createClient } from '@/db/supabase/client';
+import { createClient } from '@/db/prisma/client';
 import { getTranslations } from 'next-intl/server';
 
 import { RevalidateOneHour } from '@/lib/constants';
@@ -31,13 +31,12 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 export const revalidate = RevalidateOneHour / 2;
 
 export default async function Page({ params }: { params: { search?: string } }) {
-  const supabase = createClient();
+  const prisma = createClient();
   const t = await getTranslations('Home');
-  const { data: categoryList } = await supabase.from('navigation_category').select();
-  const { data: dataList } = await supabase
-    .from('web_navigation')
-    .select()
-    .ilike('detail', `%${decodeURI(params?.search || '')}%`);
+  const categoryList = await prisma.navigationCategory.findMany();
+  const dataList = await prisma.webNavigation.findMany({
+    where: { detail: { contains: `%${decodeURI(params?.search || '')}%` } },
+  });
 
   return (
     <Suspense fallback={<Loading />}>
@@ -46,7 +45,7 @@ export default async function Page({ params }: { params: { search?: string } }) 
           <TagList
             data={categoryList!.map((item) => ({
               id: String(item.id),
-              name: item.name,
+              name: item.name!,
               href: `/category/${item.name}`,
             }))}
           />

@@ -1,16 +1,16 @@
-export const NAV_LINKS = [
-  {
-    code: 'discover',
-    href: '/explore',
-  },
-  {
-    code: 'submit',
-    href: '/submit',
-  },
-  {
-    code: 'startup',
-    href: '/startup',
-  },
+export const NAV_LINKS: { code: string; href: string }[] = [
+  // {
+  //   code: 'discover',
+  //   href: '/explore',
+  // },
+  // {
+  //   code: 'submit',
+  //   href: '/submit',
+  // },
+  // {
+  //   code: 'startup',
+  //   href: '/startup',
+  // },
 ];
 
 export const RevalidateOneHour = 3600;

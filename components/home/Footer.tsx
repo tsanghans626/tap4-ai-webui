@@ -81,7 +81,7 @@ export default function Footer() {
           <p className='text-xs'>{t('subTitle')}</p>
         </div>
         <div className='mt-5 flex flex-col items-center gap-y-5 lg:mt-0 lg:flex-row lg:items-stretch lg:gap-x-10'>
-          <div className='flex w-full flex-col gap-2'>
+          {/* <div className='flex w-full flex-col gap-2'>
             <p className='font-bold'>{t('support')}</p>
             {SupportLinks.map((item) => (
               <a
@@ -95,8 +95,8 @@ export default function Footer() {
                 {item.title}
               </a>
             ))}
-          </div>
-          <div className='grid grid-cols-2 gap-x-10 gap-y-5 lg:grid-cols-1 lg:gap-3'>
+          </div> */}
+          {/* <div className='grid grid-cols-2 gap-x-10 gap-y-5 lg:grid-cols-1 lg:gap-3'>
             {INFO_LIST.map((item) => (
               <InfoLink key={item.href} href={item.href} title={item.title} />
             ))}
@@ -108,7 +108,7 @@ export default function Footer() {
             >
               {t('contactUs')}
             </a>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

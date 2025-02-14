@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.db"
+  // url      = env("DATABASE_URL")
+}
+
+model Submit {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  name       String?
+  url        String?
+  email      String?
+  is_feature Int      @default(0)
+  status     Int      @default(0)
+
+  @@map("submit")
+}
+
+model NavigationCategory {
+  id          Int      @id @default(autoincrement())
+  name        String?
+  title       String?
+  sort        Int      @default(0)
+  del_flag    Int      @default(0) // 默认值可以设为0，但COMMENT要单独写
+  create_by   Int?     @default(0) // 默认值可以设为0，但COMMENT要单独写
+  create_time DateTime @default(now())
+
+  @@map("navigation_category")
+}
+
+model WebNavigation {
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  title           String
+  content         String
+  detail          String
+  url             String
+  image_url       String
+  thumbnail_url   String
+  website_data    String?
+  collection_time DateTime
+  star_rating     Int
+  tag_name        String?
+  category_name   String
+
+  @@map("web_navigation")
+}

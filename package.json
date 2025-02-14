@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "3.3.4",
+    "@prisma/client": "6.3.1",
     "@radix-ui/react-label": "2.0.2",
     "@radix-ui/react-select": "2.0.0",
     "@radix-ui/react-separator": "1.0.3",
@@ -70,5 +71,8 @@
     "prettier-plugin-tailwindcss": "0.5.13",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
+  },
+  "prisma": {
+    "schema": "db/prisma/schema.prisma"
   }
 }

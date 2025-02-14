@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { WebNavigation } from '@/db/supabase/types';
+import { WebNavigation } from '@prisma/client';
 import { useTranslations } from 'next-intl';
 
 import Empty from '@/components/Empty';

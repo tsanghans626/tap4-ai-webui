@@ -1,4 +1,4 @@
-import type { WebNavigation } from '@/db/supabase/types';
+import type { WebNavigation } from '@prisma/client';
 
 import WebNavCard from './WebNavCard';
 

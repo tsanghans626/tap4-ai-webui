@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { createClient } from '@/db/supabase/client';
+import { createClient } from '@/db/prisma/client';
 import { CircleChevronRight } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
@@ -34,11 +34,11 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 export const revalidate = RevalidateOneHour;
 
 export default async function Page() {
-  const supabase = createClient();
+  const prisma = createClient();
   const t = await getTranslations('Home');
-  const [{ data: categoryList }, { data: navigationList }] = await Promise.all([
-    supabase.from('navigation_category').select(),
-    supabase.from('web_navigation').select().order('collection_time', { ascending: false }).limit(12),
+  const [categoryList, navigationList] = await Promise.all([
+    prisma.navigationCategory.findMany(),
+    prisma.webNavigation.findMany({ orderBy: { collection_time: 'desc' }, take: 12 }),
   ]);
 
   return (
@@ -55,7 +55,7 @@ export default async function Page() {
           <TagList
             data={categoryList!.map((item) => ({
               id: String(item.id),
-              name: item.name,
+              name: item.name!,
               href: `/category/${item.name}`,
             }))}
           />

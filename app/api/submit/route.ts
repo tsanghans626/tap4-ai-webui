@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/db/supabase/client';
+import { createClient } from '@/db/prisma/client';
 
 // submit table empty -> stop
 
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    const supabase = createClient();
+    const prisma = createClient();
 
     // 从请求体中获取参数
     const { email, url, name } = await req.json();
@@ -41,31 +41,20 @@ export async function POST(req: NextRequest) {
     }
 
     // 检查 URL 是否已存在
-    const { data: existingEntry, error: existingEntryError } = await supabase
-      .from('web_navigation')
-      .select()
-      .eq('url', url)
-      .single();
-
-    if (existingEntryError && existingEntryError.code !== 'PGRST116') {
-      // PGRST116 means no rows found
-      throw new Error(existingEntryError.message);
-    }
+    const existingEntry = await prisma.webNavigation.findFirst({ where: { url } });
 
     if (existingEntry) {
       return NextResponse.json({ message: 'Success' });
     }
 
     // 插入新数据
-    const { error: insertError } = await supabase.from('submit').insert({
-      email,
-      url,
-      name,
+    await prisma.submit.create({
+      data: {
+        email,
+        url,
+        name,
+      },
     });
-
-    if (insertError) {
-      throw new Error(insertError.message);
-    }
 
     return NextResponse.json({ message: 'Success' });
   } catch (error) {

@@ -2,7 +2,7 @@
 
 /* eslint-disable react/jsx-props-no-spreading */
 import { useState } from 'react';
-import { createClient } from '@/db/supabase/client';
+import { createClient } from '@/db/prisma/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
@@ -21,7 +21,7 @@ const FormSchema = z.object({
 });
 
 export default function SubmitForm({ className }: { className?: string }) {
-  const supabase = createClient();
+  const prisma = createClient();
   const t = useTranslations('Submit');
 
   const [loading, setLoading] = useState(false);
@@ -38,15 +38,13 @@ export default function SubmitForm({ className }: { className?: string }) {
     let errMsg: any = t('networkError');
     try {
       setLoading(true);
-      const { error } = await supabase.from('submit').insert({
-        name: formData.website,
-        url: formData.url,
-        // email: ''
+      await prisma.submit.create({
+        data: {
+          name: formData.website,
+          url: formData.url,
+          // email: ''
+        },
       });
-      if (error) {
-        errMsg = error.message;
-        throw new Error();
-      }
       toast.success(t('success'));
       form.reset();
     } catch (error) {

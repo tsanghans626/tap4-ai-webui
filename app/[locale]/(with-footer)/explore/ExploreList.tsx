@@ -1,4 +1,4 @@
-import { createClient } from '@/db/supabase/client';
+import { createClient } from '@/db/prisma/client';
 
 import SearchForm from '@/components/home/SearchForm';
 import BasePagination from '@/components/page/BasePagination';
@@ -9,20 +9,16 @@ import { TagList } from '../(home)/Tag';
 const WEB_PAGE_SIZE = 12;
 
 export default async function ExploreList({ pageNum }: { pageNum?: string }) {
-  const supabase = createClient();
+  const prisma = createClient();
   const currentPage = pageNum ? Number(pageNum) : 1;
 
   // start and end
   const start = (currentPage - 1) * WEB_PAGE_SIZE;
   const end = start + WEB_PAGE_SIZE - 1;
 
-  const [{ data: categoryList }, { data: navigationList, count }] = await Promise.all([
-    supabase.from('navigation_category').select(),
-    supabase
-      .from('web_navigation')
-      .select('*', { count: 'exact' })
-      .order('collection_time', { ascending: false })
-      .range(start, end),
+  const [categoryList, navigationList] = await Promise.all([
+    prisma.navigationCategory.findMany(),
+    prisma.webNavigation.findMany({ orderBy: { collection_time: 'desc' }, skip: start, take: end - start }),
   ]);
 
   return (
@@ -34,7 +30,7 @@ export default async function ExploreList({ pageNum }: { pageNum?: string }) {
         <TagList
           data={categoryList!.map((item) => ({
             id: String(item.id),
-            name: item.name,
+            name: item.name!,
             href: `/category/${item.name}`,
           }))}
         />
@@ -43,7 +39,7 @@ export default async function ExploreList({ pageNum }: { pageNum?: string }) {
       <BasePagination
         currentPage={currentPage}
         pageSize={WEB_PAGE_SIZE}
-        total={count!}
+        total={navigationList!.length}
         route='/explore'
         subRoute='/page'
         className='my-5 lg:my-10'

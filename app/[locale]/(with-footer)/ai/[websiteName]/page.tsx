@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { createClient } from '@/db/supabase/client';
+import { createClient } from '@/db/prisma/client';
 import { CircleArrowRight } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
@@ -13,12 +13,12 @@ export async function generateMetadata({
 }: {
   params: { locale: string; websiteName: string };
 }): Promise<Metadata> {
-  const supabase = createClient();
+  const prisma = createClient();
   const t = await getTranslations({
     locale,
     namespace: 'Metadata.ai',
   });
-  const { data } = await supabase.from('web_navigation').select().eq('name', websiteName);
+  const data = await prisma.webNavigation.findMany({ where: { name: websiteName } });
 
   if (!data || !data[0]) {
     notFound();
@@ -31,9 +31,9 @@ export async function generateMetadata({
 }
 
 export default async function Page({ params: { websiteName } }: { params: { websiteName: string } }) {
-  const supabase = createClient();
+  const prisma = createClient();
   const t = await getTranslations('Startup.detail');
-  const { data: dataList } = await supabase.from('web_navigation').select().eq('name', websiteName);
+  const dataList = await prisma.webNavigation.findMany({ where: { name: websiteName } });
   if (!dataList) {
     notFound();
   }
